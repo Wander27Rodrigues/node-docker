@@ -1,0 +1,69 @@
+services:
+  nginx:
+    buld:
+      dsockerfile: ./docker/nginx.dsockerfile
+      context: .
+    image: wandersouza27/nginx
+    container_name: nginx
+    ports:
+     - "80:80"
+    networks:
+     - production-netwok
+    depends_on:
+      - "nodeOne"
+      - "nodeTwo"
+      - "nodeTree"
+  
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    entrypoint: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    netwoks:
+     - production-netwok
+
+  nodeOne:
+    buld:
+      dockerfile: ./docker/node.dockerfile
+      context: .
+    image: wandersouza27/nodedocker:1.1
+    container_name: nodeOne
+    ports: 
+    - 3000
+    networks:
+      - production-netwok
+    depends_on:
+      - "mongo"
+
+  nodeTwo:
+    buld:
+      dockerfile: ./docker/node.dockerfile
+      context: .
+    image: wandersouza27/nodedocker:1.1
+    container_name: nodeTwo
+    ports: 
+    - 3000
+    networks:
+      - production-netwok
+    depends_on:
+      - "mongo"      
+
+  nodeTree:
+    buld:
+      dockerfile: ./docker/node.dockerfile
+      context: .
+    image: wandersouza27/nodedocker:1.1
+    container_name: nodeTree
+    ports: 
+    - 3000
+    networks:
+      - production-netwok
+    depends_on:
+      - "mongo"        
+
+networks:
+  production-netwok:
+    driver: bridge
